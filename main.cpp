@@ -1,26 +1,27 @@
 #include<iostream>
 #include<cstdlib>
 #include<ctime>
-using namespace std;
-
-const char alphanum[] = "0123456789!@#$%^&*_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-int length = sizeof(alphanum);
+#include<string>
 
 int main(){
+    std::string alphanum = "0123456789!@#$%^&*_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int length = alphanum.size();
+
     int len = 0;
-    cout << "Enter length of password: ";
-    cin >> len;
-    if (len<10){
-        cout << "Password must be at least 10 character long\n" << "Try again.\n";
-        main();
-    } else {
-        srand(time(0));
-        cout << "Generated password: ";
-        for(int i=0; i<len; i++){
-            cout << alphanum[rand() % length];
-        }   
-    cout << "\n";
-    }
-    
+    do {
+        std::cout << "Enter length of password: ";
+        std::cin >> len;
+        if (len < 10){
+            std::cout << "Password must be at least 10 character long" << std::endl << "Try again." << std::endl;
+        }
+    } while(len < 10);
+
+    srand(static_cast<unsigned int>(time(0)));
+    std::cout << "Generated password: ";
+    for(int i=0; i<len; i++){
+        std::cout << alphanum[rand() % length];
+    }   
+    std::cout << std::endl;
+
     return 0;
 }
