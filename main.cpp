@@ -75,6 +75,8 @@ int main(){
     std::string alphanum = "";
     int len = getPasswordLength();
 
+    std::cout << std::endl;
+
     char includeNumbers = getUserChoice("Include numbers? (y/n): ");
     if(includeNumbers == 'y' || includeNumbers == 'Y'){
         alphanum += numbers;
@@ -98,6 +100,13 @@ int main(){
     std::cout << std::endl;
 
     generatePasswords(alphanum, len);
+
+    std::cout << std::endl;
+    std::cout << "Copy and paste your password(s) to a safe location." << std::endl;
+    std::cout << "Press ENTER to exit...";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+    std::cin.get();
+
 
     return 0;
 }
