@@ -12,14 +12,10 @@ int getPasswordLength() {
     int len = 0;
     do {
         std::cout << "Enter length of password: ";
-        if (!(std::cin >> len)) {
-            std::cout << "You must enter a valid integer." << std::endl;
+        if (!(std::cin >> len) || len < 10) {
+            std::cout << "Password must be at least 10 characters long. Try again." << std::endl;
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
-        }
-        if (len < 10){
-            std::cout << "Password must be at least 10 character long" << std::endl << "Try again." << std::endl;
         }
     } while(len < 10);
     return len;
@@ -39,18 +35,33 @@ char getUserChoice(const std::string& prompt) {
     return choice;
 }
 
+int getNumberOfPasswords() {
+    int n;
+    do {
+        std::cout << "How many passwords do you want to generate? ";
+        if (!(std::cin >> n) || n <= 0) {
+            std::cout << "Please enter a valid positive integer." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } while (n <= 0);
+    return n;
+}
+
 void generatePasswords(const std::string& alphanum, int len) {
+    if (alphanum.empty()) {
+        std::cout << "No character sets selected. Exiting." << std::endl;
+        return;
+    }
+
     std::random_device rd;
     std::mt19937 g(rd());
 
-    int n;
+    int numPasswords = getNumberOfPasswords();
 
-    std::cout << "How many passwords do you want to generate? ";
-    std::cin >> n;
+    std::cout << "Generating " << numPasswords << " passwords..." << std::endl << std::endl;
 
-    std::cout << "Generating " << n << " passwords..." << std::endl << std::endl;
-
-    for (int j = 0; j < n; j++) {
+    for (int j = 0; j < numPasswords; j++) {
         std::cout << "Generated password: ";
         for(int i=0; i<len; i++){
             std::uniform_int_distribution<int> dist(0, alphanum.size() - 1);
@@ -64,19 +75,23 @@ int main(){
     std::string alphanum = "";
     int len = getPasswordLength();
 
-    if(getUserChoice("Include numbers? (y/n): ") == 'y' || 'Y'){
+    char includeNumbers = getUserChoice("Include numbers? (y/n): ");
+    if(includeNumbers == 'y' || includeNumbers == 'Y'){
         alphanum += numbers;
     }
 
-    if(getUserChoice("Include special characters? (y/n): ") == 'y' || 'Y'){
+    char includeSpecialChars = getUserChoice("Include special characters? (y/n): ");
+    if(includeSpecialChars == 'y' || includeSpecialChars == 'Y'){
         alphanum += special_chars;
-    }
+    } 
 
-    if(getUserChoice("Include lowercase letters? (y/n): ") == 'y' || 'Y'){
+    char includeLowercase = getUserChoice("Include lowercase letters? (y/n): ");
+    if(includeLowercase == 'y' || includeLowercase == 'Y'){
         alphanum += lowercase;
     }
 
-    if(getUserChoice("Include uppercase letters? (y/n): ") == 'y' || 'Y'){
+    char includeUppercase = getUserChoice("Include uppercase letters? (y/n): ");
+    if(includeUppercase == 'y' || includeUppercase == 'Y'){
         alphanum += uppercase;
     }
 
