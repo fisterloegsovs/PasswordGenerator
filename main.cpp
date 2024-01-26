@@ -2,6 +2,7 @@
 #include<string>
 #include<limits>
 #include<random>
+#include<ctime>
 
 std::string numbers = "0123456789";
 std::string special_chars = "!@#$%^&*_";
@@ -54,8 +55,7 @@ void generatePasswords(const std::string& alphanum, int len) {
         return;
     }
 
-    std::random_device rd;
-    std::mt19937 g(rd());
+    std::mt19937 g(time(0));
 
     int numPasswords = getNumberOfPasswords();
 
