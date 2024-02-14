@@ -2,7 +2,7 @@
 #include<string>
 #include<limits>
 #include<random>
-#include<ctime>
+#include <iomanip>
 
 std::string numbers = "0123456789";
 std::string special_chars = "!@#$%^&*_";
@@ -49,25 +49,53 @@ int getNumberOfPasswords() {
     return n;
 }
 
-void generatePasswords(const std::string& alphanum, int len) {
-    if (alphanum.empty()) {
-        std::cout << "No character sets selected. Exiting." << std::endl;
-        return;
+int calculatePasswordStrength(const std::string& password) {
+    int strength = 0;
+
+    // Length
+    if (password.length() >= 15) strength += 3;
+    else if (password.length() >= 10) strength += 2;
+    else strength += 1;
+
+    // Character Variety
+    bool hasLowercase = false, hasUppercase = false, hasDigit = false, hasSpecialChar = false;
+    for (char c : password) {
+        if (std::islower(c)) hasLowercase = true;
+        else if (std::isupper(c)) hasUppercase = true;
+        else if (std::isdigit(c)) hasDigit = true;
+        else hasSpecialChar = true;
+    }
+    strength += hasLowercase + hasUppercase + hasDigit + hasSpecialChar;
+
+    // Repetition and Consecutive Characters
+    for (size_t i = 1; i < password.length(); i++) {
+        if (password[i] == password[i-1]) strength -= 1; // Consecutive characters
     }
 
-    std::mt19937 g(time(0));
+    return strength;
+}
+
+void generatePasswords(const std::string& alphanum, int len) {
+    std::random_device rd;
+    std::mt19937 g(rd());
 
     int numPasswords = getNumberOfPasswords();
 
     std::cout << "Generating " << numPasswords << " passwords..." << std::endl << std::endl;
 
+    // Print table header
+    std::cout << std::left << std::setw(len) << "Password" << " | " << std::setw(10) << "Strength" << std::endl;
+    std::cout << std::string(len + 13, '-') << std::endl;
+
     for (int j = 0; j < numPasswords; j++) {
-        std::cout << "Generated password: ";
+        std::string password = "";
         for(int i=0; i<len; i++){
             std::uniform_int_distribution<int> dist(0, alphanum.size() - 1);
-            std::cout << alphanum[dist(g)];
+            password += alphanum[dist(g)];
         }   
-        std::cout << std::endl;
+        int strength = calculatePasswordStrength(password);
+        // Print password and strength in table format
+        std::cout << std::left << std::setw(len) << password << " | " << std::setw(10) << strength << std::endl;
     }
 }
 
@@ -102,6 +130,7 @@ int main(){
     generatePasswords(alphanum, len);
 
     std::cout << std::endl;
+    std::cout << "Next to each password is a number indicating its strength." << std::endl;
     std::cout << "Copy and paste your password(s) to a safe location." << std::endl;
     std::cout << "Press ENTER to exit...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
